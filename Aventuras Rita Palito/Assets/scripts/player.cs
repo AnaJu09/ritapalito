@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class player : MonoBehaviour
+public class Player : MonoBehaviour
 {
     //variavel para o rigidbody
     private Rigidbody2D rig;
@@ -13,8 +13,8 @@ public class player : MonoBehaviour
     //componente animator
     public Animator animator;
 
-    private bool isJumping = false;
-    private float JumpForce = 8;
+    public bool isJumping = false;
+    private float JumpForce = 6;
 
 
     void Start()
@@ -52,10 +52,28 @@ public class player : MonoBehaviour
             //Debug.Log("Tecla D pressionada");
         }
         //verificar se a tecla de pular foi pressionada
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && isJumping == false)
         {
             rig.AddForce(Vector2.up * JumpForce, ForceMode2D.Impulse);
         }
 
+    }
+
+    private void onTriggerEnter2D(Collider2D collision)
+    {
+        //verifica se o objeto tem a tag line
+        if(collision.gameObject.CompareTag("Line")){
+            //retorna o personagem pro inicio
+            Debug.Log("MORRI!");
+            transform.position = posInicial;
+        }
+
+        //verifica se o objeto tem a checkpoint
+        if (collision.gameObject.CompareTag("Checkpoint"))
+        {
+            Debug.Log("salvo!");
+            //modifica a posição inicial para o checkpoint
+            posInicial = collision.gameObject.transform.position;
+        }
     }
 }
